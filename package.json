@@ -1,0 +1,8 @@
+{
+  "name": "buffalo-king-premium",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  }
+}

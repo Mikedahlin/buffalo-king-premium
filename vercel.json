@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "functions": {
+    "api/[...path].js": {
+      "runtime": "nodejs24.x"
+    }
+  },
+  "headers": [
+    {
+      "source": "/(.*)\\.(png|jpg|mp4|wav|mp3|css|js)",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+    }
+  ]
+}

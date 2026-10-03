@@ -1,0 +1,8 @@
+Standalone
+Dockerfile
+README.md
+bin
+obj
+.git
+.gitignore
+.env*
