@@ -1,10 +1,5 @@
 {
   "version": 2,
-  "functions": {
-    "api/[...path].js": {
-      "runtime": "nodejs24.x"
-    }
-  },
   "headers": [
     {
       "source": "/(.*)\\.(png|jpg|mp4|wav|mp3|css|js)",
