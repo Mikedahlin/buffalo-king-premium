@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+  <title>ML&R Casino – Premium Slots</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/css/slot.css?v=2026-premium-v2"/>
+</head>
+<body>
+<div id="app">
+  <canvas id="particle-canvas"></canvas>
+
+    <div id="cabinet">
+    <div class="cabinet-lights" aria-hidden="true"></div>
+    <!-- Game Lobby Nav -->
+    <nav id="game-lobby-nav">
+      <span class="lobby-brand">🎰 ML&amp;R CASINO</span>
+      <div class="lobby-games">
+        <button class="lobby-game-btn active" data-game="buffalo-king">🦬 Buffalo King</button>
+        <button class="lobby-game-btn coming-soon" title="Coming Soon">🐉 Dragon Fire</button>
+        <button class="lobby-game-btn coming-soon" title="Coming Soon">💎 Diamond Rush</button>
+        <button class="lobby-game-btn coming-soon" title="Coming Soon">🍀 Lucky Clover</button>
+      </div>
+    </nav>
+    <div id="title-banner">
+      <h1 class="game-title"><span class="title-buf">BUFFALO</span> <span class="title-king">KING</span></h1>
+      <div class="title-sub">2026 PREMIUM EDITION</div>
+    </div>
+
+    <div id="jp-bar">
+      <div class="jp-item mini"><span class="jp-lbl">MINI</span><span id="jp-mini">0</span></div>
+      <div class="jp-item minor"><span class="jp-lbl">MINOR</span><span id="jp-minor">0</span></div>
+      <div class="jp-item major"><span class="jp-lbl">MAJOR</span><span id="jp-major">0</span></div>
+      <div class="jp-item grand"><span class="jp-lbl">GRAND</span><span id="jp-grand">0</span></div>
+    </div>
+
+    <div id="top-bar">
+      <div class="display-box">
+        <span class="display-label">CREDIT</span>
+        <span id="credits" class="display-value">10,000</span>
+      </div>
+      <div class="display-box win-box">
+        <span class="display-label">WIN</span>
+        <span id="win-display" class="display-value win-gold">0</span>
+      </div>
+      <div class="display-box">
+        <span class="display-label">BET</span>
+        <span id="bet-display" class="display-value">80</span>
+      </div>
+      <div class="display-box" id="spins-container" style="display:none">
+        <span class="display-label">FREE SPINS</span>
+        <span id="spins-display" class="display-value spins-green">0</span>
+      </div>
+    </div>
+
+    <div id="reel-window">
+      <div id="grid" class="grid"></div>
+      <div id="win-overlay"></div>
+    </div>
+
+    <div id="multiplier-bar">
+      <span class="mpx-lbl">MULTIPLIER</span>
+      <span id="multiplier-value" class="mpx-val">1x</span>
+    </div>
+
+    <div id="ways-display"></div>
+
+    <div id="controls">
+      <div id="bet-section">
+        <button id="bet-down" class="bet-btn">−</button>
+        <div class="bet-display-wrap">
+          <span class="bet-label">BET</span>
+          <span id="bet-amount">80</span>
+        </div>
+        <button id="bet-up" class="bet-btn">+</button>
+        <button id="max-bet-btn" class="ctrl-btn">MAX</button>
+      </div>
+      <button id="spin-btn">SPIN</button>
+      <div id="right-controls">
+        <button id="paytable-btn" class="ctrl-btn">PAY</button>
+        <button id="mute-btn" class="ctrl-btn">🔊</button>
+      </div>
+    </div>
+
+    <div id="mute-row">
+      <button id="sound-test-btn" type="button">🔈 ENABLE SOUND</button>
+      <span id="sound-status"></span>
+      <span id="toast" class="hidden"></span>
+    </div>
+  </div>
+</div>
+
+<!-- BONUS INTRO VIDEO -->
+<div id="bonus-intro-overlay" class="overlay hidden" style="z-index:300;background:#000;">
+  <div style="position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
+    <video id="bonus-intro-video" playsinline style="max-width:100%;max-height:100%;width:100%;height:100%;object-fit:cover;">
+      <source src="/video/buffalo-bonus.mp4" type="video/mp4"/>
+    </video>
+    <button id="bonus-intro-skip" style="position:absolute;bottom:24px;right:24px;background:rgba(0,0,0,0.6);border:1px solid rgba(255,215,0,0.4);border-radius:6px;color:#ffd700;font-size:0.75rem;font-weight:bold;padding:6px 14px;cursor:pointer;letter-spacing:1px;">SKIP ▶</button>
+  </div>
+</div>
+
+<!-- BONUS WHEEL -->
+<div id="wheel-overlay" class="overlay hidden">
+  <div class="wheel-panel">
+    <div class="bonus-header"><h2 class="bonus-title">🎡 BONUS WHEEL</h2></div>
+    <div class="wheel-container">
+      <div class="wheel-pointer">▼</div>
+      <canvas id="bonus-wheel-canvas" width="340" height="340"></canvas>
+    </div>
+    <div id="wheel-result-display" class="wheel-result-display hidden"></div>
+    <div id="wheel-footer" class="bonus-footer">
+      <button id="wheel-spin-btn" class="bonus-btn pulse-btn">SPIN THE WHEEL!</button>
+    </div>
+  </div>
+</div>
+
+<!-- FREE SPINS -->
+<div id="freespins-overlay" class="overlay hidden">
+  <div class="bonus-panel freespins-panel">
+    <div class="bonus-header"><h2 class="bonus-title">⚡ FREE SPINS BONUS</h2></div>
+    <div class="fs-stats">
+      <div class="fs-stat-box"><span class="fs-stat-label">SPINS LEFT</span><span id="fs-remaining" class="fs-stat-val">0</span></div>
+      <div class="fs-stat-box"><span class="fs-stat-label">MULTIPLIER</span><span id="fs-multiplier" class="fs-stat-val">1x</span></div>
+      <div class="fs-stat-box"><span class="fs-stat-label">TOTAL WIN</span><span id="fs-total-win" class="fs-stat-val win-gold">0</span></div>
+    </div>
+    <div id="fs-reel-window" class="fs-reel-window">
+      <div id="fs-grid" class="grid"></div>
+    </div>
+    <div id="fs-log" class="fs-log"></div>
+    <div id="fs-footer" class="bonus-footer hidden">
+      <button id="fs-collect-btn" class="bonus-btn collect-btn">🏆 COLLECT WINNINGS</button>
+    </div>
+  </div>
+</div>
+
+<!-- PICK BONUS -->
+<div id="pick-overlay" class="overlay hidden">
+  <div class="bonus-panel pick-panel">
+    <div class="bonus-header"><h2 class="bonus-title">🦬 PICK A PRIZE</h2></div>
+    <p id="pick-info" class="pick-info">Pick <span id="picks-remaining" class="picks-num">3</span> animals to reveal your prizes!</p>
+    <div id="pick-grid" class="pick-grid"></div>
+    <div class="pick-total-wrap hidden" id="pick-total-wrap">
+      <span class="pick-total-label">TOTAL WIN:</span>
+      <span id="pick-total" class="pick-total-val">0</span>
+    </div>
+    <div id="pick-footer" class="bonus-footer hidden">
+      <button id="pick-collect-btn" class="bonus-btn collect-btn">COLLECT</button>
+    </div>
+  </div>
+</div>
+
+<!-- HOLD & SPIN -->
+<div id="holdspin-overlay" class="overlay hidden">
+  <div class="bonus-panel holdspin-panel">
+    <div class="bonus-header"><h2 class="bonus-title">🪙 HOLD &amp; SPIN</h2></div>
+    <div class="hs-stats">
+      <div class="hs-stat-box"><span class="hs-stat-label">RESPINS</span><span id="hs-respins" class="hs-stat-val">3</span></div>
+      <div class="hs-stat-box"><span class="hs-stat-label">COINS</span><span id="hs-coins" class="hs-stat-val">0</span></div>
+      <div class="hs-stat-box"><span class="hs-stat-label">WIN</span><span id="hs-win" class="hs-stat-val win-gold">0</span></div>
+    </div>
+    <div id="hs-grid" class="hs-grid"></div>
+    <div id="hs-footer" class="bonus-footer">
+      <button id="hs-spin-btn" class="bonus-btn pulse-btn">RESPIN</button>
+    </div>
+  </div>
+</div>
+
+<!-- STAMPEDE -->
+<div id="stampede-overlay" class="overlay hidden">
+  <div class="bonus-panel stampede-panel">
+    <div class="bonus-header"><h2 class="bonus-title">💨 BUFFALO STAMPEDE</h2></div>
+    <div id="stampede-scene" class="stampede-scene">
+      <div id="stampede-herd" class="stampede-herd"></div>
+    </div>
+    <div id="stampede-wave-info" class="stampede-wave-info"></div>
+    <div id="stampede-log" class="stampede-log"></div>
+    <div id="stampede-footer" class="bonus-footer">
+      <button id="stampede-charge-btn" class="bonus-btn pulse-btn">CHARGE!</button>
+    </div>
+  </div>
+</div>
+
+<!-- WIN CELEBRATION -->
+<div id="win-celebration" class="overlay hidden">
+  <div class="win-celebration-panel">
+    <div id="win-cel-title" class="win-cel-title">BIG WIN!</div>
+    <div id="win-cel-amount" class="win-cel-amount">0</div>
+    <button id="win-cel-close" class="bonus-btn">AWESOME!</button>
+  </div>
+</div>
+
+<!-- PAYTABLE -->
+<div id="paytable" class="overlay hidden">
+  <div class="panel paytable-panel">
+    <div class="panel-hd">
+      <h2>PAYTABLE</h2>
+      <button id="paytable-close">✕</button>
+    </div>
+    <div class="panel-bd">
+      <div class="pay-row"><div class="pay-sym" style="background-image:url(/images/buffalo.png)"></div><div class="pay-info"><b>BUFFALO</b><span>3=10x · 4=50x · 5=250x · 6=500x</span></div></div>
+      <div class="pay-row"><div class="pay-sym" style="background-image:url(/images/eagle.png)"></div><div class="pay-info"><b>EAGLE (WILD)</b><span>3=6x · 4=20x · 5=100x · 6=200x</span></div></div>
+      <div class="pay-row"><div class="pay-sym" style="background-image:url(/images/wolf.png)"></div><div class="pay-info"><b>WOLF</b><span>3=5x · 4=15x · 5=75x · 6=150x</span></div></div>
+      <div class="pay-row"><div class="pay-sym" style="background-image:url(/images/king.png)"></div><div class="pay-info"><b>KING</b><span>3=3x · 4=10x · 5=40x · 6=80x</span></div></div>
+      <div class="pay-row"><div class="pay-sym" style="background-image:url(/images/queen.png)"></div><div class="pay-info"><b>QUEEN</b><span>3=3x · 4=10x · 5=40x · 6=80x</span></div></div>
+      <div class="pay-row"><div class="pay-sym" style="background-image:url(/images/jack.png)"></div><div class="pay-info"><b>JACK</b><span>3=3x · 4=10x · 5=40x · 6=80x</span></div></div>
+      <div class="pay-row"><div class="pay-sym" style="background-image:url(/images/ten.png)"></div><div class="pay-info"><b>TEN</b><span>3=3x · 4=10x · 5=40x · 6=80x</span></div></div>
+      <div class="pay-row scatter-row"><div class="pay-sym" style="background-image:url(/images/coin.png)"></div><div class="pay-info"><b>COIN (SCATTER)</b><span>2=2x · 3=5x · 4=20x · 5=50x · 6=100x</span><span class="scatter-note">2+ Scatters trigger a BONUS ROUND!</span></div></div>
+      <div class="pay-row" style="background:rgba(255,68,68,0.06);border:1px solid rgba(255,68,68,0.2)"><div class="pay-sym" style="background-image:url(/images/fight.png)"></div><div class="pay-info"><b>FIGHT (SPECIAL)</b><span>Triggers Stampede &amp; Pick A Prize bonus rounds</span><span class="scatter-note" style="color:#ff8888">Rare symbol — triggers big bonus rounds!</span></div></div>
+    </div>
+    <div class="bonus-types-section">
+      <h3>BONUS ROUNDS</h3>
+      <p style="font-size: 0.9em; color: #ffd700; margin: 0 0 10px 0;">All bonus types trigger the Premium Free Spins presentation with special themes and rising multipliers!</p>
+      <div class="bonus-type-row"><span class="bt-icon">🎡</span><span><b>Bonus Wheel</b> – 10 Wheel Spins (2x-4x Mult)</span></div>
+      <div class="bonus-type-row"><span class="bt-icon">⚡</span><span><b>Free Spins</b> – 8 Free Spins (1x-3x Mult)</span></div>
+      <div class="bonus-type-row"><span class="bt-icon">🦬</span><span><b>Pick A Prize</b> – 10 Prize Spins (2x-5x Mult)</span></div>
+      <div class="bonus-type-row"><span class="bt-icon">🪙</span><span><b>Hold &amp; Spin</b> – 12 Coin Spins (2x-5x Mult)</span></div>
+      <div class="bonus-type-row"><span class="bt-icon">💨</span><span><b>Stampede</b> – 15 Stampede Spins (3x-6x Mult)</span></div>
+    </div>
+  </div>
+</div>
+
+<script src="/js/slot.js?v=2026-premium-v9"></script>
+</body>
+</html>
